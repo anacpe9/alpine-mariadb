@@ -41,3 +41,13 @@ docker run --detach \
        -e MYSQL_ROOT_PASSWORD=mysqlRootStrongP@ssw0rd \
        registry.gitlab.com/cha-alpine/mariadb:latest
 ```
+
+## Source Repository
+
+- [**cha-alpine/mariadb | Gitlab**](https://gitlab.com/cha-alpine/mariadb) - main workspace.
+- [anacpe9/alpine-mariadb | Github](https://github.com/anacpe9/alpine-mariadb) - mirror.
+- [anacpe9/alpine-mariadb | Bitbucket](https://bitbucket.org/anacpe9/alpine-mariadb) - mirror.
+
+## License
+
+MIT
