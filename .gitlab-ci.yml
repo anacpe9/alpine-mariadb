@@ -36,7 +36,7 @@ Github Mirror:
   only:
     - master
   script:
-    - apk update && apk upgrade && apk add --no-cache --update git
+    # - apk update && apk upgrade && apk add --no-cache --update git
     - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
     - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
 
