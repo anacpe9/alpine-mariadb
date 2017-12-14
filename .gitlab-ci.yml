@@ -1,0 +1,42 @@
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - build-and-deploy
+  - git-push-to-mirror
+
+Docker build:
+  stage: build-and-deploy
+  script:
+    - docker info
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - TMPTAG="10.1.26-r0"
+    - docker build --pull -t $CI_REGISTRY_IMAGE:latest .
+    - echo "docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG"
+    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG
+    - docker push $CI_REGISTRY_IMAGE:$TMPTAG
+    - docker push $CI_REGISTRY_IMAGE:latest
+    # - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    # - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:arm32v7
+
+# Github Mirror:
+#   stage: git-push-to-mirror
+#   tags:
+#     - git-push-to-mirror
+#   script:
+#     - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
+#     - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
+
+# Bitbucket Mirror:
+#   stage: git-push-to-mirror
+#   tags:
+#     - git-push-to-mirror
+#   script:
+#     - mkdir -p ~/.ssh
+#     - echo "$BB_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - ssh-keyscan -H 'bitbucket.org' >> ~/.ssh/known_hosts
+#     - git push --mirror git@$BITBUCKET_REPO
+#     - git push git@$BITBUCKET_REPO HEAD:master
