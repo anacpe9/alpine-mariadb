@@ -21,16 +21,17 @@ Docker build:
     - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG
     - docker push $CI_REGISTRY_IMAGE:$TMPTAG
     - docker push $CI_REGISTRY_IMAGE:latest
-    # - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-    # - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:arm32v7
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG
+    - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:latest
 
-# Github Mirror:
-#   stage: git-push-to-mirror
-#   tags:
-#     - git-push-to-mirror
-#   script:
-#     - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
-#     - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
+Github Mirror:
+  stage: git-push-to-mirror
+  tags:
+    - git-push-to-mirror
+  script:
+    - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
+    - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
 
 # Bitbucket Mirror:
 #   stage: git-push-to-mirror
