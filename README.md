@@ -50,4 +50,4 @@ docker run --detach \
 
 ## License
 
-MIT
+[MIT](LICENSE)
