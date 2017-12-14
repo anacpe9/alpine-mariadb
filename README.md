@@ -5,7 +5,7 @@ used in Gitlab CI/CD. (not found official image on hub.docker.com)
 
 - [mariadb - pkgs.alpinelinux.org](https://pkgs.alpinelinux.org/packages?name=mariadb&branch=&repo=&arch=x86_64&maintainer=)
 - [mariadb - docker](https://github.com/docker-library/mariadb)
-- used entrypoint script from [alpine-mariadb](https://github.com/yobasystems/alpine-mariadb)
+- used entrypoint script from [yobasystems/alpine-mariadb](https://github.com/yobasystems/alpine-mariadb)
 
 ## docker-image dependencies graph
 
