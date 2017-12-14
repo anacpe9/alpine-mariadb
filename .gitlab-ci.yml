@@ -25,8 +25,7 @@ Docker build:
     - docker images
     - docker push $CI_REGISTRY_IMAGE:$TMPTAG
     - docker push $CI_REGISTRY_IMAGE:latest
-    # - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD $DOCKERHUB_REGISTRY
-    - cat $DOCKERHUB_PASSWORD | docker login --username $DOCKERHUB_USERNAME --password-stdin $DOCKERHUB_REGISTRY
+    - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD" $DOCKERHUB_REGISTRY
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:latest
 
