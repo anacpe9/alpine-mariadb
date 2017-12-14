@@ -12,16 +12,20 @@ stages:
 
 Docker build:
   stage: build-and-deploy
+  variables:
+    DOCKERHUB_REGISTRY: "https://registry-1.docker.io/"
+    DOCKER_REGISTRY_DOCKERHUB_REPO: "anacha/alpine-mariadb"
   script:
     - docker info
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - TMPTAG="10.1.26-r0"
-    - docker build --pull -t $CI_REGISTRY_IMAGE:latest .
-    - echo "docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG"
-    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG
+    - docker build --pull -t $CI_REGISTRY_IMAGE:latest -t push $CI_REGISTRY_IMAGE:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:latest .
+    # - echo "docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG"
+    # - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG
+    - docker images
     - docker push $CI_REGISTRY_IMAGE:$TMPTAG
     - docker push $CI_REGISTRY_IMAGE:latest
-    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+    - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD $DOCKERHUB_REGISTRY
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:latest
 
@@ -29,6 +33,8 @@ Github Mirror:
   stage: git-push-to-mirror
   tags:
     - git-push-to-mirror
+  variables:
+    GITHUB_REPO: "github.com/anacpe9/alpine-mariadb.git"
   script:
     - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
     - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
