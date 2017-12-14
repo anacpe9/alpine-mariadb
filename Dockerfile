@@ -9,7 +9,7 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache --update \
-        "mariadb=10.1.26-r0" \
+        "mariadb=10.1.26-r0" && \
     rm -rf /tmp/* && \
     rm -rf /var/tmp/* && \
     rm -rf /var/cache/apk/* && \

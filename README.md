@@ -30,13 +30,14 @@ used in Gitlab CI/CD. (not found official image on hub.docker.com)
 ### Creating an instance example
 
 ```shell
-docker run -it \
-       --name mysql \
+docker run --detach \
+       --name db-mariadb \
+       --restart always \
        -p 3306:3306 \
        -v /var/lib/mysql:/var/lib/mysql \
        -e MYSQL_DATABASE=wordpressdb \
        -e MYSQL_USER=wordpressuser \
-       -e MYSQL_PASSWORD=mysql(!)StrongP@ssw0rd \
-       -e MYSQL_ROOT_PASSWORD=mysqlRoot(!)StrongP@ssw0rd \
-       registry.gitlab.com/cha-alpine/mariadb
+       -e MYSQL_PASSWORD=mysqlStrongP@ssw0rd \
+       -e MYSQL_ROOT_PASSWORD=mysqlRootStrongP@ssw0rd \
+       registry.gitlab.com/cha-alpine/mariadb:latest
 ```
