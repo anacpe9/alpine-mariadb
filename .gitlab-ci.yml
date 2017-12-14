@@ -19,7 +19,7 @@ Docker build:
     - docker info
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - TMPTAG="10.1.26-r0"
-    - docker build --pull -t $CI_REGISTRY_IMAGE:latest -t push $CI_REGISTRY_IMAGE:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:latest .
+    - docker build -t $CI_REGISTRY_IMAGE:latest -t push $CI_REGISTRY_IMAGE:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:latest .
     # - echo "docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG"
     # - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$TMPTAG
     - docker images
