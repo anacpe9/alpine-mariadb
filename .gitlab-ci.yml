@@ -43,7 +43,7 @@ Docker build:
     - $([[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config) 
 
 Github Mirror:
-  <<: *job_sshpushtemplate
+  <<: *sshpush
   stage: git-push-to-mirror
   variables:
     # GITHUB_REPO: "github.com/anacpe9/alpine-mariadb.git"
@@ -60,7 +60,7 @@ Github Mirror:
     - git push git@$GITHUB_REPO HEAD:master
 
 Bitbucket Mirror:
-  <<: *job_sshpushtemplate
+  <<: *sshpush
   stage: git-push-to-mirror
   variables:
     BITBUCKET_REPO: "bitbucket.org:anacpe9/alpine-mariadb.git"
