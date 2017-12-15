@@ -21,7 +21,13 @@ Docker build:
     - docker info
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - TMPTAG="10.1.26-r0"
-    - docker build --pull -t $CI_REGISTRY_IMAGE:latest -t $CI_REGISTRY_IMAGE:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG -t $DOCKER_REGISTRY_DOCKERHUB_REPO:latest .
+    - >
+      docker build --pull
+      -t $CI_REGISTRY_IMAGE:$TMPTAG
+      -t $CI_REGISTRY_IMAGE:latest 
+      -t $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG
+      -t $DOCKER_REGISTRY_DOCKERHUB_REPO:latest
+      .
     - docker images
     - docker push $CI_REGISTRY_IMAGE:$TMPTAG
     - docker push $CI_REGISTRY_IMAGE:latest
@@ -29,32 +35,46 @@ Docker build:
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:$TMPTAG
     - docker push $DOCKER_REGISTRY_DOCKERHUB_REPO:latest
 
+.job_sshpushtemplate: &sshpush
+  before_script:
+    - which ssh-agent || (apk add --no-cache --update openssh-client)
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - $([[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config) 
+
 Github Mirror:
+  <<: *job_sshpushtemplate
   stage: git-push-to-mirror
   variables:
-    GITHUB_REPO: "github.com/anacpe9/alpine-mariadb.git"
+    # GITHUB_REPO: "github.com/anacpe9/alpine-mariadb.git"
+    GITHUB_REPO: "github.com:anacpe9/alpine-mariadb.git"
   only:
     - master
   script:
-    # - apk update && apk upgrade && apk add --no-cache --update git
-    - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
-    - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
+    # # - apk update && apk upgrade && apk add --no-cache --update git
+    # - git push --mirror https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO
+    # - git push https://$GITHUB_USERNAME:$GITHUB_PASSWORD@$GITHUB_REPO HEAD:master
+    - echo "$GITHUB_SSH_PRIVATE_KEY" | ssh-add -
+    - ssh-add -l
+    - git push --mirror git@$GITHUB_REPO
+    - git push git@$GITHUB_REPO HEAD:master
 
 Bitbucket Mirror:
+  <<: *job_sshpushtemplate
   stage: git-push-to-mirror
   variables:
     BITBUCKET_REPO: "bitbucket.org:anacpe9/alpine-mariadb.git"
   only:
     - master
   script:
+    # # - mkdir -p ~/.ssh
+    # # - echo "$BITBUCKET_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    # # - chmod 600 ~/.ssh/id_rsa
+    # # - ssh-keyscan -H 'bitbucket.org' >> ~/.ssh/known_hosts
+    # - which ssh-agent || (apk add --no-cache --update openssh-client)
+    # - eval $(ssh-agent -s)
     # - mkdir -p ~/.ssh
-    # - echo "$BITBUCKET_SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    # - chmod 600 ~/.ssh/id_rsa
-    # - ssh-keyscan -H 'bitbucket.org' >> ~/.ssh/known_hosts
-    - which ssh-agent || (apk add --no-cache --update openssh-client)
-    - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - $([[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config)
+    # - $([[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config)
     - echo "$BITBUCKET_SSH_PRIVATE_KEY" | ssh-add -
     - ssh-add -l
     - git push --mirror git@$BITBUCKET_REPO
